@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\ParentController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -43,7 +43,15 @@ Route::middleware([
             return view('teacher.dashboard');
         } else {
             // Redirect to an appropriate route if not a teacher
-            return redirect()->route('parent');
+            return redirect()->route('parents.parent');
         }
     })->name('teacher.dashboard');
+
+   Route::get('/homework', [UserController::class, 'index'])->name('homework');
+   Route::post('/upload', [UserController::class, 'upload'])->name('upload');
+   Route::get('/subjects', [UserController::class, 'show_subjects'])->name('subjects');
+   Route::post('/subjects', [UserController::class, 'subjects'])->name('subjects');
+   
 });
+
+

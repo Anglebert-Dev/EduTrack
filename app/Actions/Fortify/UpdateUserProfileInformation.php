@@ -21,20 +21,25 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
+            'phone' => ['nullable', 'string', 'max:15'],
+            'subjects' => ['nullable', 'array'], // Validate subjects as an array
         ])->validateWithBag('updateProfileInformation');
 
         if (isset($input['photo'])) {
             $user->updateProfilePhoto($input['photo']);
         }
 
-        if ($input['email'] !== $user->email &&
-            $user instanceof MustVerifyEmail) {
+        if (
+            $input['email'] !== $user->email &&
+            $user instanceof MustVerifyEmail
+        ) {
             $this->updateVerifiedUser($user, $input);
         } else {
             $user->forceFill([
                 'name' => $input['name'],
                 'email' => $input['email'],
                 'phone' => $input['phone'],
+                'subjects' => json_encode($input['subjects']), // Encode subjects as JSON
             ])->save();
         }
     }
@@ -50,6 +55,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'name' => $input['name'],
             'email' => $input['email'],
             'phone' => $input['phone'],
+            'subjects' => json_encode($input['subjects']), // Encode subjects as JSON
             'email_verified_at' => null,
         ])->save();
 

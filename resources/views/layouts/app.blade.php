@@ -10,7 +10,8 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
+        <link rel="shortcut icon" type="image/x-icon" style="border-radius: 40px"
+        href="https://web.archive.org/web/20180108005241im_/http://notredamedesanges.ac.rw/images/icons/home_image_loho.png">
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
