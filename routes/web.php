@@ -48,6 +48,8 @@ Route::middleware([
     })->name('teacher.dashboard');
 
    Route::get('/homework', [UserController::class, 'index'])->name('homework');
+   Route::get('/classes', [UserController::class, 'show_class'])->name('classes.show');
+Route::post('/classes', [UserController::class, 'store_class'])->name('classes.store');
    Route::post('/upload', [UserController::class, 'upload'])->name('upload');
    Route::get('/subjects', [UserController::class, 'show_subjects'])->name('subjects');
    Route::post('/subjects', [UserController::class, 'subjects'])->name('subjects');

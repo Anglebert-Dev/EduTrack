@@ -2,7 +2,7 @@
     <x-slot name="header">
         @if (Auth::user()->role === "parent")
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Uploaded Homeworks
+            Homework Uploaded For Your Children
         </h2>
         @else
         <div class="flex items-center justify-between">
@@ -16,11 +16,17 @@
         @endif
     </x-slot>
     @if (session('status'))
-    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
         {{ session('status') }}
+        <button type="button" class="absolute top-0 right-0 mt-1 mr-2 text-gray-700 hover:text-gray-900" onclick="this.parentElement.style.display='none'">
+            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M14.293 5.293a1 1 0 011.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 011.414-1.414L10 8.586l4.293-4.293z" clip-rule="evenodd" />
+            </svg>
+        </button>
     </div>
     @endif
 
+    @if (Auth::user()->role === "teacher")
     <div id="uploadModal" class="fixed z-10 inset-0 overflow-y-auto hidden" aria-labelledby="uploadModalLabel" role="dialog" aria-modal="true">
         <div class="flex items-center justify-center min-h-screen">
             <div class="bg-white rounded-lg shadow-lg p-6 sm:p-8 w-full sm:max-w-md">
@@ -69,7 +75,7 @@
             </div>
         </div>
     </div>
-
+    @endif
     <script>
         function toggleModal(modalId) {
             const modal = document.getElementById(modalId);
@@ -87,37 +93,33 @@
 
 
     @if(Auth::user()->role === 'parent')
+
     <div class="max-w-6xl mx-auto py-10 sm:px-6 lg:px-8">
+        @if ($parents_homeworks->isEmpty())
+        <p class="text-center text-gray-600">No homework available.</p>
+        @endif
+        @foreach ($parents_homeworks as $parents_homework)
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-8">
             <div class="p-6 bg-white border-b border-gray-200">
-                <h3 class="text-lg font-semibold mb-2">Math Homework</h3>
-                <p class="text-gray-600 mb-4">Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias molestiae laborum commodi?</p>
-                <p class="text-gray-500 mb-2"><strong>Date to be submitted:</strong> June 20, 2024</p>
-                <p class="text-gray-500"><strong>Class:</strong> Grade 10</p>
+                <h3 class="text-lg font-semibold mb-2">{{ $parents_homework->subject }} Homework</h3>
+                <p class="text-gray-600 mb-4">{{ $parents_homework->description }}</p>
+                <p class="text-gray-500 mb-2"><strong>Date to be submitted:</strong> {{ Carbon\Carbon::parse($parents_homework->submission_date)->format('M d, Y') }}</p>
+                <p class="text-gray-500"><strong>Class:</strong> {{ $parents_homework->class->name }}</p>
                 <div class="mt-4">
-                    <a href="#" class="bg-gray-200 hover:bg-gray-300 text-black font-bold py-2 px-4 rounded inline-block">Download</a>
+                    <a href="{{ asset('storage/' . $parents_homework->file_path) }}" target="_blank"  class="bg-gray-200 hover:bg-gray-300 text-black font-bold py-2 px-4 rounded inline-block">Download</a>
                 </div>
             </div>
         </div>
-
-        <div class="mb-4"></div>
-
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-8">
-            <div class="p-6 bg-white border-b border-gray-200">
-                <h3 class="text-lg font-semibold mb-2">Science Homework</h3>
-                <p class="text-gray-600 mb-4">Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias molestiae laborum commodi?</p>
-                <p class="text-gray-500 mb-2"><strong>Date to be submitted:</strong> June 25, 2024</p>
-                <p class="text-gray-500"><strong>Class:</strong> Grade 8</p>
-                <div class="mt-4">
-                    <a href="#" class="bg-gray-200 hover:bg-gray-300 text-black font-bold py-2 px-4 rounded inline-block">Download</a>
-                </div>
-            </div>
-        </div>
+        @endforeach
     </div>
     @elseif(Auth::user()->role === 'teacher')
+
     <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        @if ($homeworks->isEmpty())
+        <p class="text-center text-gray-600">No uploaded homework.</p>
+        @endif
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-            @forelse($homeworks as $homework)
+            @foreach($homeworks as $homework)
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg flex flex-col h-full">
                 <div class="p-6 border-b border-gray-200 flex flex-col flex-grow">
                     <div class="flex items-center justify-between mb-4">
@@ -137,9 +139,7 @@
                     <a href="{{ asset('storage/' . $homework->file_path) }}" target="_blank" class="text-indigo-600 font-semibold">Download</a>
                 </div>
             </div>
-            @empty
-            <p class="text-gray-500 text-lg mx-auto">No uploaded homework.</p>
-            @endforelse
+            @endforeach
         </div>
     </div>
     @endif

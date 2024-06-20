@@ -21,6 +21,13 @@
                         {{__('Homeworks') }}
                     </x-nav-link>
                 </div>
+                @if(Auth::user()->role == 'parent')
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link href="{{ route('classes.show') }}" :active="request()->routeIs('classes.show')">
+                        {{__('Classes') }}
+                    </x-nav-link>
+                </div>
+                @endif
                 @if(Auth::user()->role == 'teacher')
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('subjects') }}" :active="request()->routeIs('subjects')">
@@ -126,6 +133,11 @@
                 <x-responsive-nav-link href="{{ route('homework') }}" :active="request()->routeIs('homework')">
                     {{__('Homeworks') }}
                 </x-responsive-nav-link>
+                @if(Auth::user()->role == 'parent')
+                <x-responsive-nav-link href="{{ route('classes.show') }}" :active="request()->routeIs('classes.show')">
+                    {{__('Classes') }}
+                </x-responsive-nav-link>
+                @endif
                 @if(Auth::user()->role == 'teacher')
                 <x-responsive-nav-link href="{{ route('subjects') }}" :active="request()->routeIs('subjects')">
                     {{__('Subjects') }}
